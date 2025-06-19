@@ -23,17 +23,64 @@
       --badge-text: #181f4b;
       --header-gradient: linear-gradient(90deg, #181f4b 0%, #232a5c 100%);
     }
+    /* Navigation Bar Styles */
+    .nav-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      padding: 15px;
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .nav-button {
+      background-color: var(--primary);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 4px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: all 0.2s ease;
+    }
+    .nav-button.active {
+      background-color: #1251a3;
+      box-shadow: 0 2px 4px rgba(18, 81, 163, 0.2);
+    }
+    .nav-button:hover {
+      transform: translateY(-1px);
+    }
+    .number {
+      background: rgba(255,255,255,0.2);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    /* Original exercise nav - hide it */
+    .exercise-nav {
+      display: none;
+    }
+    /* Add margin to body to prevent content from being hidden under nav */
     body {
+      margin-top: 20px !important;
+      padding-top: 0 !important;
       background: var(--neutral-bg);
       font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
       color: var(--text);
-      margin: 0;
-      padding: 2rem 0;
     }
     .controls {
       position: fixed;
       left: 2rem;
-      top: 2rem;
+      top: 6rem;
       z-index: 100;
       display: flex;
       flex-direction: column;
@@ -42,6 +89,28 @@
       padding: 1rem;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .test-email-form {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .test-email-input {
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .send-test-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.6em 1.2em;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+      transition: background 0.2s;
+      font-weight: 500;
+      outline: none;
     }
     .rotate-btn, .toggle-candex-btn {
       background: var(--primary);
@@ -361,14 +430,42 @@
         margin-top: 0.7rem;
       }
     }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: var(--neutral-bg);
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
   </style>
 </head>
 <body>
-  <div class="controls">
-    <button class="rotate-btn" onclick="rotateLogo()">Rotate Logo</button>
-    <button class="toggle-candex-btn" id="toggle-candex" onclick="toggleCandex()">Show Candex ID</button>
+  <div class="nav-bar">
+    <a href="#" class="nav-button active">
+      <span class="number">1</span>
+      New Email Header
+    </a>
+    <a href="exercise2.html" class="nav-button">
+      <span class="number">2</span>
+      Exercise 2
+    </a>
+    <a href="exercise3.html" class="nav-button">
+      <span class="number">3</span>
+      Exercise 3
+    </a>
+    <a href="exercise4.html" class="nav-button">
+      <span class="number">4</span>
+      Exercise 4
+    </a>
+    <a href="exercise5.html" class="nav-button">
+      <span class="number">5</span>
+      Exercise 5
+    </a>
   </div>
 
+  <div class="controls">
+    <button id="rotateBtn" class="rotate-btn">Rotate Logo</button>
+    <button id="toggleCandexBtn" class="toggle-candex-btn">Show Candex ID</button>
+  </div>
   <div class="email-card">
     <!-- 1. Header Bar with Logo and All Info -->
     <div class="header-bar">
@@ -474,18 +571,19 @@
       updateCustomerInfo(logos[0]);
     });
 
-    function rotateLogo() {
+    // Rotate logo functionality
+    document.getElementById('rotateBtn').addEventListener('click', function() {
       currentLogo = (currentLogo + 1) % logos.length;
       updateCustomerInfo(logos[currentLogo]);
-    }
+    });
 
     // Candex ID toggle logic
     let candexVisible = false;
     const instructionsBlock = document.getElementById('instructions-block');
-    const toggleBtn = document.getElementById('toggle-candex');
+    const toggleBtn = document.getElementById('toggleCandexBtn');
     const mainCta = document.getElementById('main-cta');
     
-    function toggleCandex() {
+    toggleBtn.addEventListener('click', function() {
       candexVisible = !candexVisible;
       instructionsBlock.classList.toggle('visible', candexVisible);
       toggleBtn.textContent = candexVisible ? 'Hide Candex ID' : 'Show Candex ID';
@@ -496,9 +594,10 @@
       // Toggle email body messages
       document.getElementById('standard-message').style.display = candexVisible ? 'none' : 'block';
       document.getElementById('candex-message').style.display = candexVisible ? 'block' : 'none';
-    }
+    });
+    
     // Hide Candex ID section by default
     instructionsBlock.classList.remove('visible');
   </script>
 </body>
-</html> 
+</html>

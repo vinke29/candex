@@ -1,36 +1,17 @@
 const express = require('express');
-const sgMail = require('@sendgrid/mail');
 const path = require('path');
-require('dotenv').config();
-
 const app = express();
-app.use(express.json({ limit: '10mb' }));
-app.use(express.static(path.join(__dirname)));
+const port = 3000;
 
-// Set your SendGrid API key
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+app.use(express.json());
+app.use(express.static(__dirname));
 
-app.post('/send-test-email', async (req, res) => {
-  try {
-    const { to, html } = req.body;
-    
-    const msg = {
-      to,
-      from: process.env.SENDER_EMAIL, // Your verified sender email
-      subject: 'Test Email - Candex Header Template',
-      html
-    };
-    
-    await sgMail.send(msg);
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
+console.log('Starting server...');
+console.log('Static directory:', __dirname);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Open http://localhost:${PORT}/email-header-sample.html to view the template`);
+app.listen(port, () => {
+  console.log('=================================');
+  console.log(`Server running on port ${port}`);
+  console.log('Open http://localhost:3000/email-header-sample.html to view the template');
+  console.log('=================================');
 }); 

@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercise 2 - Invoice Upload</title>
+  <style>
+    :root {
+      --primary: #181f4b;
+      --primary-light: #e3e6f3;
+      --accent: #1976d2;
+      --accent-light: #e3f0fa;
+      --neutral-bg: #f7f7f7;
+      --text: #333333;
+      --muted: #6e6e6e;
+      --border: #e0e0e0;
+      --danger: #d32f2f;
+      --warning: #f57c00;
+      --success: #388e3c;
+      --card-radius: 4px;
+      --card-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    
+    body {
+      font-family: var(--font-sans);
+      margin: 0;
+      padding: 20px;
+      background-color: var(--neutral-bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    .nav-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      padding: 15px;
+      background-color: #fff;
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+    }
+    
+    .nav-button {
+      background-color: var(--primary);
+      color: white;
+      padding: 10px 15px;
+      border-radius: var(--card-radius);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: all 0.2s ease;
+    }
+    
+    .nav-button.active {
+      background-color: #1251a3;
+      box-shadow: 0 2px 4px rgba(18, 81, 163, 0.2);
+    }
+    
+    .nav-button:hover {
+      transform: translateY(-1px);
+    }
+    
+    .number {
+      background: rgba(255,255,255,0.2);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .card {
+      background-color: white;
+      padding: 40px;
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      color: var(--primary);
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    
+    .upload-area {
+      border: 1px dashed var(--border);
+      border-radius: var(--card-radius);
+      padding: 50px 40px;
+      text-align: center;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      cursor: pointer;
+      background-color: rgba(0,0,0,0.01);
+    }
+    
+    .upload-area:hover {
+      border-color: var(--accent);
+      background-color: rgba(25, 118, 210, 0.02);
+    }
+    
+    .upload-icon {
+      font-size: 48px;
+      color: var(--accent);
+      margin-bottom: 15px;
+      opacity: 0.8;
+    }
+    
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--card-radius);
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.01em;
+    }
+    
+    .btn:hover {
+      background-color: #1251a3;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .btn-secondary {
+      background-color: white;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    
+    .btn-secondary:hover {
+      background-color: var(--primary-light);
+    }
+    
+    .btn-warning {
+      background-color: #e65100;
+      color: white;
+    }
+    
+    .btn-warning:hover {
+      background-color: #d84315;
+    }
+    
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+      backdrop-filter: blur(2px);
+    }
+    
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal {
+      background-color: white;
+      border-radius: var(--card-radius);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      width: 90%;
+      max-width: 550px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(-20px);
+      transition: transform 0.3s ease;
+    }
+    
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+    
+    .modal-header {
+      padding: 24px 30px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fafafa;
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--primary);
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--muted);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.2s;
+    }
+    
+    .modal-close:hover {
+      background-color: rgba(0,0,0,0.05);
+    }
+    
+    .modal-body {
+      padding: 30px;
+    }
+    
+    .modal-footer {
+      padding: 20px 30px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    
+    /* Issue styles */
+    .issue {
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .issue:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    
+    .issue-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 16px;
+      padding-bottom: 4px;
+    }
+    
+    .issue-icon {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: #f44336;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 14px;
+      box-shadow: 0 2px 4px rgba(244, 67, 54, 0.2);
+    }
+    
+    .issue-title {
+      font-weight: 600;
+      margin: 0;
+      flex-grow: 1;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+      color: #333;
+      padding-top: 4px;
+    }
+    
+    .expected-value {
+      background-color: #ffffff;
+      padding: 16px 20px;
+      border-radius: var(--card-radius);
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      white-space: pre-line;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #333;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    
+    .comparison-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    
+    @media (min-width: 600px) {
+      .comparison-container {
+        flex-direction: row;
+        gap: 16px;
+      }
+      
+      .comparison-column {
+        flex: 1;
+      }
+    }
+    
+    .comparison-column {
+      background-color: #ffffff;
+      padding: 16px 20px;
+      border-radius: var(--card-radius);
+      font-family: var(--font-mono);
+      white-space: pre-line;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #333;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    
+    .comparison-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .comparison-label-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+    }
+    
+    .label-submitted .comparison-label-icon {
+      background-color: #f44336;
+      color: white;
+    }
+    
+    .label-expected .comparison-label-icon {
+      background-color: #4caf50;
+      color: white;
+    }
+    
+    .highlight-diff {
+      background-color: #ffecb3;
+      padding: 0 3px;
+      border-radius: 2px;
+      border: 1px solid #ffe082;
+      font-weight: 500;
+    }
+    
+    .invoice-preview {
+      border: 1px solid var(--border);
+      border-radius: var(--card-radius);
+      margin-top: 24px;
+      overflow: hidden;
+    }
+    
+    .invoice-header {
+      padding: 16px;
+      background-color: #f5f5f5;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .invoice-body {
+      padding: 16px;
+    }
+    
+    .invoice-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .invoice-row:last-child {
+      border-bottom: none;
+    }
+    
+    .invoice-total {
+      font-weight: bold;
+      margin-top: 16px;
+      text-align: right;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .file-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #e3f2fd;
+      color: #2196f3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--card-radius);
+      font-size: 20px;
+    }
+    
+    .file-details {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .file-name {
+      font-weight: 500;
+    }
+    
+    .file-meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    
+    .tab-container {
+      margin-top: 16px;
+    }
+    
+    .tab-buttons {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    
+    .tab-button {
+      padding: 8px 16px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    
+    .tab-button.active {
+      border-bottom-color: var(--accent);
+      color: var(--accent);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .tip {
+      background-color: var(--accent-light);
+      padding: 14px 18px;
+      border-radius: var(--card-radius);
+      margin-top: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    
+    .tip-icon {
+      color: var(--accent);
+      font-size: 18px;
+      margin-top: 2px;
+    }
+    
+    .warning {
+      background-color: #ffffff;
+      padding: 18px 20px;
+      border-radius: var(--card-radius);
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #b36200;
+      font-size: 14px;
+      border: 1px solid #ffe082;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    
+    .warning-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      color: #f57c00;
+    }
+    
+    .help-link {
+      display: inline-block;
+      margin-top: 0;
+      color: #1976d2;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .help-link:hover {
+      text-decoration: underline;
+    }
+    
+    .highlight {
+      background-color: #fff59d;
+      padding: 0 3px;
+      border-radius: 2px;
+      font-weight: 500;
+    }
+    
+    p {
+      margin: 0 0 16px;
+      color: var(--muted);
+    }
+    
+    /* Loading animation styles */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+      backdrop-filter: blur(2px);
+    }
+    
+    .loading-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .loading-container {
+      background-color: white;
+      border-radius: var(--card-radius);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      width: 90%;
+      max-width: 400px;
+      padding: 30px;
+      text-align: center;
+      transform: translateY(-20px);
+      transition: transform 0.3s ease;
+    }
+    
+    .loading-overlay.active .loading-container {
+      transform: translateY(0);
+    }
+    
+    .loading-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+      margin: 0 0 20px 0;
+    }
+    
+    .loading-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .loading-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+      opacity: 0.4;
+      transition: opacity 0.3s ease;
+    }
+    
+    .loading-step.active {
+      opacity: 1;
+    }
+    
+    .loading-step.completed .step-icon {
+      background-color: var(--success);
+    }
+    
+    .loading-step.completed .step-icon:after {
+      content: "✓";
+    }
+    
+    .step-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    .step-icon:after {
+      content: "";
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid white;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    .loading-step.completed .step-icon:after {
+      animation: none;
+      border: none;
+    }
+    
+    .loading-progress {
+      height: 4px;
+      background-color: #e0e0e0;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background-color: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .card {
+        padding: 30px 20px;
+      }
+      
+      .modal-body {
+        padding: 20px;
+      }
+      
+      .modal-header {
+        padding: 20px;
+      }
+      
+      .modal-footer {
+        padding: 15px 20px;
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    
+    /* Confirmation modal styles */
+    .confirmation-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+    
+    .confirmation-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .confirmation-modal {
+      background-color: white;
+      border-radius: var(--card-radius);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      width: 90%;
+      max-width: 450px;
+      padding: 24px;
+      transform: translateY(-20px);
+      transition: transform 0.3s ease;
+    }
+    
+    .confirmation-modal-overlay.active .confirmation-modal {
+      transform: translateY(0);
+    }
+    
+    .confirmation-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary);
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .confirmation-title .warning-icon {
+      font-size: 20px;
+      color: #f57c00;
+    }
+    
+    .confirmation-message {
+      margin-bottom: 24px;
+      color: var(--muted);
+      line-height: 1.5;
+      background-color: #f9f9f9;
+      padding: 12px 16px;
+      border-radius: var(--card-radius);
+      border: 1px solid #e0e0e0;
+    }
+    
+    .confirmation-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    
+    @media (max-width: 600px) {
+      .confirmation-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-bar">
+    <a href="email-header-sample.html" class="nav-button">
+      <span class="number">1</span>
+      New Email Header
+    </a>
+    <a href="#" class="nav-button active">
+      <span class="number">2</span>
+      Exercise 2
+    </a>
+    <a href="exercise3.html" class="nav-button">
+      <span class="number">3</span>
+      Exercise 3
+    </a>
+    <a href="exercise4.html" class="nav-button">
+      <span class="number">4</span>
+      Exercise 4
+    </a>
+    <a href="exercise5.html" class="nav-button">
+      <span class="number">5</span>
+      Exercise 5
+    </a>
+  </div>
+  
+  <div class="container">
+    <div class="card">
+      <h1>Upload Invoice</h1>
+      <p>Please upload your invoice for PO #12345. Accepted formats: PDF, PNG, JPG.</p>
+      
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">📄</div>
+        <p>Drag and drop your invoice here<br>or click to browse files</p>
+      </div>
+      
+      <button class="btn" id="uploadBtn">
+        <span>Upload Invoice</span>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Modal -->
+  <div class="modal-overlay" id="issuesModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Invoice Issues Found</h3>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="file-info" style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+          <div class="file-icon">📄</div>
+          <div class="file-details">
+            <div class="file-name">Invoice_June2023.pdf</div>
+            <div class="file-meta">Uploaded just now • 145 KB</div>
+          </div>
+        </div>
+
+        <p style="margin-bottom: 24px;">We found 2 issues with your invoice that need to be corrected:</p>
+
+        <div class="issue">
+          <div class="issue-header">
+            <div class="issue-icon">1</div>
+            <h4 class="issue-title">Your invoice is missing or has the wrong billing entity.</h4>
+          </div>
+          
+          <div class="comparison-container">
+            <div class="comparison-column">
+              <div class="comparison-label label-submitted">
+                <span class="comparison-label-icon">✗</span> Submitted
+              </div>
+              <div>
+Acme Corp
+123 Wrong Street
+New York, NY 10001
+              </div>
+            </div>
+            <div class="comparison-column">
+              <div class="comparison-label label-expected">
+                <span class="comparison-label-icon">✓</span> Expected
+              </div>
+              <div>
+Candex Solutions Ltd  
+Kemp House, 152 City Road  
+London EC1V 2NX UK 
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="issue">
+          <div class="issue-header">
+            <div class="issue-icon">2</div>
+            <h4 class="issue-title">Invoice total does not match PO</h4>
+          </div>
+          
+          <div class="comparison-container">
+            <div class="comparison-column">
+              <div class="comparison-label label-submitted">
+                <span class="comparison-label-icon">✗</span> Submitted
+              </div>
+              <div>
+Invoice Total: <span class="highlight-diff">$860.00</span>
+              </div>
+            </div>
+            <div class="comparison-column">
+              <div class="comparison-label label-expected">
+                <span class="comparison-label-icon">✓</span> Expected
+              </div>
+              <div>
+Invoice Total: $880.00
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="warning">
+          <span class="warning-icon">⚠️</span>
+          <div>Please correct the issues and re-upload your invoice to avoid payment delays. <a href="#" class="help-link" style="margin: 0; color: #1976d2; text-decoration: underline;">Need help?</a></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="continueBtn">
+          ➡️ Continue Anyway
+        </button>
+        <button class="btn" id="reuploadBtn">
+          🔁 Re-upload Invoice
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Loading animation -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-container">
+      <h3 class="loading-title">Analyzing Invoice</h3>
+      <div class="loading-steps">
+        <div class="loading-step" id="step1">
+          <div class="step-icon"></div>
+          <div class="step-text">Reading document</div>
+        </div>
+        <div class="loading-step" id="step2">
+          <div class="step-icon"></div>
+          <div class="step-text">Extracting invoice data</div>
+        </div>
+        <div class="loading-step" id="step3">
+          <div class="step-icon"></div>
+          <div class="step-text">Validating against PO</div>
+        </div>
+        <div class="loading-step" id="step4">
+          <div class="step-icon"></div>
+          <div class="step-text">Checking compliance</div>
+        </div>
+      </div>
+      <div class="loading-progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Confirmation modal -->
+  <div class="confirmation-modal-overlay" id="confirmationModal">
+    <div class="confirmation-modal">
+      <div class="confirmation-title">
+        <span class="warning-icon">⚠️</span>
+        <span>Confirm submission with issues</span>
+      </div>
+      <div class="confirmation-message">
+        Continuing with errors might delay your payment. Are you sure you wish to proceed?
+      </div>
+      <div class="confirmation-actions">
+        <button class="btn btn-secondary" id="cancelContinue">
+          Cancel
+        </button>
+        <button class="btn btn-warning" id="confirmContinue">
+          Continue Anyway
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Get DOM elements
+    const uploadArea = document.getElementById('uploadArea');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const issuesModal = document.getElementById('issuesModal');
+    const closeModal = document.getElementById('closeModal');
+    const continueBtn = document.getElementById('continueBtn');
+    const reuploadBtn = document.getElementById('reuploadBtn');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const progressBar = document.getElementById('progressBar');
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const step4 = document.getElementById('step4');
+    const confirmationModal = document.getElementById('confirmationModal');
+    const cancelContinue = document.getElementById('cancelContinue');
+    const confirmContinue = document.getElementById('confirmContinue');
+    
+    // Show loading animation when upload button is clicked
+    uploadBtn.addEventListener('click', () => {
+      showLoadingAnimation();
+    });
+    
+    // Also show loading animation when upload area is clicked
+    uploadArea.addEventListener('click', () => {
+      showLoadingAnimation();
+    });
+    
+    function showLoadingAnimation() {
+      loadingOverlay.classList.add('active');
+      
+      // Step 1: Reading document
+      step1.classList.add('active');
+      progressBar.style.width = '25%';
+      
+      // Step 2: Extracting invoice data
+      setTimeout(() => {
+        step1.classList.add('completed');
+        step2.classList.add('active');
+        progressBar.style.width = '50%';
+      }, 1200);
+      
+      // Step 3: Validating against PO
+      setTimeout(() => {
+        step2.classList.add('completed');
+        step3.classList.add('active');
+        progressBar.style.width = '75%';
+      }, 2400);
+      
+      // Step 4: Checking compliance
+      setTimeout(() => {
+        step3.classList.add('completed');
+        step4.classList.add('active');
+        progressBar.style.width = '100%';
+      }, 3200);
+      
+      // Complete and show issues modal
+      setTimeout(() => {
+        step4.classList.add('completed');
+        
+        // Hide loading overlay and show issues modal after a brief delay
+        setTimeout(() => {
+          loadingOverlay.classList.remove('active');
+          issuesModal.classList.add('active');
+          
+          // Reset loading animation for next time
+          setTimeout(() => {
+            step1.classList.remove('active', 'completed');
+            step2.classList.remove('active', 'completed');
+            step3.classList.remove('active', 'completed');
+            step4.classList.remove('active', 'completed');
+            progressBar.style.width = '0%';
+          }, 500);
+        }, 800);
+      }, 4000);
+    }
+    
+    // Close modal
+    closeModal.addEventListener('click', () => {
+      issuesModal.classList.remove('active');
+    });
+    
+    // Close modal when clicking outside
+    issuesModal.addEventListener('click', (e) => {
+      if (e.target === issuesModal) {
+        issuesModal.classList.remove('active');
+      }
+    });
+    
+    // Re-upload button
+    reuploadBtn.addEventListener('click', () => {
+      issuesModal.classList.remove('active');
+      // In a real app, this would trigger the file upload dialog
+    });
+    
+    // Continue anyway button - show confirmation modal
+    continueBtn.addEventListener('click', () => {
+      confirmationModal.classList.add('active');
+    });
+    
+    // Cancel continue button
+    cancelContinue.addEventListener('click', () => {
+      confirmationModal.classList.remove('active');
+    });
+    
+    // Confirm continue button
+    confirmContinue.addEventListener('click', () => {
+      confirmationModal.classList.remove('active');
+      issuesModal.classList.remove('active');
+      alert('Invoice submitted with issues.');
+    });
+    
+    // Close confirmation modal when clicking outside
+    confirmationModal.addEventListener('click', (e) => {
+      if (e.target === confirmationModal) {
+        confirmationModal.classList.remove('active');
+      }
+    });
+    
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      uploadArea.addEventListener(eventName, preventDefaults, false);
+      document.body.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    // Highlight drop area when dragging over it
+    ['dragenter', 'dragover'].forEach(eventName => {
+      uploadArea.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+      uploadArea.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight() {
+      uploadArea.classList.add('highlight');
+    }
+    
+    function unhighlight() {
+      uploadArea.classList.remove('highlight');
+    }
+  </script>
+</body>
+</html> 
