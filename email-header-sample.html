@@ -69,7 +69,7 @@
     }
     .header-bar {
       background: var(--header-gradient);
-      padding: 1.8rem 2rem 1.2rem 2rem;
+      padding: 2rem 2rem 1.5rem 2rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -125,8 +125,10 @@
     .header-cta {
       margin-top: 0.7rem;
       display: flex;
-      justify-content: flex-end;
+      flex-direction: column;
+      align-items: flex-end;
       width: 100%;
+      position: relative;
     }
     .header-cta .cta-btn {
       font-size: 0.85rem;
@@ -140,9 +142,31 @@
       transition: background 0.18s, color 0.18s, border 0.18s;
     }
     .header-cta .cta-btn:hover {
-      background: var(--primary);
+      background: #1976d2;
       color: #fff;
       border-color: var(--primary);
+    }
+    .header-cta .candex-id-header {
+      margin-top: 0.5rem;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 400;
+      display: none;
+      text-align: right;
+      width: max-content;
+      max-width: 100%;
+    }
+    .header-cta .candex-id-header .code {
+      font-weight: 500;
+    }
+    .header-cta .candex-id-header span.note {
+      color: var(--muted);
+      font-size: 0.7rem;
+      margin-left: 0.5em;
+    }
+    .header-cta .candex-id-header.visible {
+      display: block;
+      animation: fadeIn 0.3s;
     }
     .concept-title {
       font-family: 'Montserrat', 'Inter', sans-serif;
@@ -214,11 +238,10 @@
     }
     .instructions-block {
       width: 100%;
-      padding: 0.8rem 0 0.2rem;
+      padding: 0.4rem 0 0.2rem;
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 0.4rem;
       text-align: center;
       font-size: 0.85rem;
     }
@@ -264,7 +287,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
+      gap: 0.5rem;
     }
     .instructions-block.visible {
       display: flex;
@@ -362,6 +385,9 @@
           </div>
           <div class="header-cta">
             <a href="#" class="cta-btn" id="header-cta">View Order</a>
+            <div class="candex-id-header" id="candex-id-header">
+              Use ID: <span class="code">43434343</span> to authenticate
+            </div>
           </div>
         </div>
       </div>
@@ -369,19 +395,24 @@
     <hr class="divider">
     <!-- 2. Email Body -->
     <div class="email-body">
-      <p>Hi [Seller XYZ],</p>
-      <p><span class="partner-text">Colgate-Palmolive</span> has submitted a purchase order for the following service: Booth Design. Candex will manage the invoicing and payment process on their behalf.</p>
-      <p>Please view the order details, status, and next steps by clicking the button below.</p>
+      <div id="standard-message">
+        <p>Hi [Seller XYZ],</p>
+        <p><span class="partner-text">Colgate-Palmolive</span> has submitted a purchase order for the following service: Booth Design. Candex will manage the invoicing and payment process on their behalf.</p>
+        <p>Please view the order details, status, and next steps by clicking the button below.</p>
+      </div>
+      <div id="candex-message" style="display: none;">
+        <p>Hi [Seller XYZ],</p>
+        <p>It looks like there was an issue with the tax calculation on your invoice for the following service: Booth Design. Please review the details and submit a corrected invoice by clicking the button below.</p>
+        <p>As a reminder, Candex is managing the invoicing and payment process on <span class="partner-text">Lego</span>'s behalf.</p>
+      </div>
     </div>
     <!-- 3. CTA Section -->
     <div class="cta-section">
       <a href="#" class="cta-btn" id="main-cta">View Order</a>
       <div class="instructions-block" id="instructions-block">
         <div class="candex-id-row">
-          <span class="candex-id-label">Candex ID</span>
-          <span class="candex-id-value">43434343</span>
+          Use ID: <span class="candex-id-value">43434343</span> to authenticate
         </div>
-        <div class="candex-note">You'll need this code to authenticate</div>
       </div>
     </div>
     <!-- 4. Email Footer -->
@@ -427,8 +458,10 @@
       // Update "From:" in header
       fromText.textContent = 'From: ' + customer.name;
       
-      // Update the partnership text in the email body
-      partnerText.textContent = customer.displayName;
+      // Update all partner text elements in the email body
+      document.querySelectorAll('.partner-text').forEach(element => {
+        element.textContent = customer.displayName;
+      });
     }
 
     // Initialize with first customer
@@ -453,6 +486,11 @@
       toggleBtn.textContent = candexVisible ? 'Hide Candex ID' : 'Show Candex ID';
       mainCta.textContent = candexVisible ? 'Re-submit Invoice' : 'View Order';
       document.getElementById('header-cta').textContent = candexVisible ? 'Re-submit Invoice' : 'View Order';
+      document.getElementById('candex-id-header').classList.toggle('visible', candexVisible);
+      
+      // Toggle email body messages
+      document.getElementById('standard-message').style.display = candexVisible ? 'none' : 'block';
+      document.getElementById('candex-message').style.display = candexVisible ? 'block' : 'none';
     }
     // Hide Candex ID section by default
     instructionsBlock.classList.remove('visible');
