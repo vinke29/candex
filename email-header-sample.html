@@ -225,6 +225,9 @@
     .email-body p {
       margin: 0 0 1rem 0;
     }
+    .email-body p:last-child {
+      margin-bottom: 0;
+    }
     .cta-section {
       padding: 0.5rem 2rem 1.5rem;
       display: flex;
@@ -289,7 +292,7 @@
     <div class="header-bar">
       <div class="logo-container">
         <div class="logo">
-          <img id="main-logo" src="logos/British_Airways-Logo.wine.png" alt="Client Logo">
+          <img id="main-logo" src="logos/colgate.png" alt="Client Logo">
         </div>
       </div>
       <div class="header-info">
@@ -308,11 +311,8 @@
     <!-- 2. Email Body -->
     <div class="email-body">
       <p>Hi [Seller XYZ],</p>
-      <p>Colgate has partnered with Candex to help manage the ordering and payment process for the following service: Booth Design.</p>
-      <p>You can view the full order details, status, and next steps by clicking the button below.</p>
-      <div class="signature">
-        <p>Thank you for your partnership,<br>The Colgate Team</p>
-      </div>
+      <p><span class="partner-text">Colgate-Palmolive</span> has submitted a purchase order for the following service: Booth Design. Candex will manage the invoicing and payment process on their behalf.</p>
+      <p>Please view the order details, status, and next steps by clicking the button below.</p>
     </div>
     <!-- 3. CTA Section -->
     <div class="cta-section">
@@ -327,22 +327,59 @@
     </div>
     <!-- 4. Email Footer -->
     <div class="email-footer">
-      © 2024 Colgate. All rights reserved. | 123 Main St, California, USA
+      © 2024 Candex. All rights reserved. | 123 Main St, California, USA
     </div>
   </div>
   <script>
+    // Customer configuration
+    const customers = {
+      'colgate.png': {
+        name: 'Colgate-Palmolive',
+        displayName: 'Colgate-Palmolive'
+      },
+      'lego.png': {
+        name: 'Lego',
+        displayName: 'Lego'
+      },
+      'british-airways.png': {
+        name: 'British Airways',
+        displayName: 'British Airways'
+      },
+      'hills.png': {
+        name: 'Hill\'s',
+        displayName: 'Hill\'s'
+      }
+    };
+
     // List of logo file names in the logos folder
-    const logos = [
-      'logos/British_Airways-Logo.wine.png',
-      'logos/Screenshot 2025-06-19 at 10.49.34 AM.png',
-      'logos/Screenshot 2025-06-19 at 10.49.46 AM.png',
-      'logos/Screenshot 2025-06-19 at 10.51.56 AM.png'
-    ];
+    const logos = Object.keys(customers);
     let currentLogo = 0;
+    
     const logoImg = document.getElementById('main-logo');
+    const fromText = document.querySelector('.from-info');
+    const partnerText = document.querySelector('.partner-text');
+    
+    function updateCustomerInfo(logoFileName) {
+      const customer = customers[logoFileName];
+      // Update the logo
+      logoImg.src = 'logos/' + logoFileName;
+      logoImg.alt = customer.name + ' Logo';
+      
+      // Update "From:" in header
+      fromText.textContent = 'From: ' + customer.name;
+      
+      // Update the partnership text in the email body
+      partnerText.textContent = customer.displayName;
+    }
+
+    // Initialize with first customer
+    window.addEventListener('DOMContentLoaded', (event) => {
+      updateCustomerInfo(logos[0]);
+    });
+
     function rotateLogo() {
       currentLogo = (currentLogo + 1) % logos.length;
-      logoImg.src = logos[currentLogo];
+      updateCustomerInfo(logos[currentLogo]);
     }
 
     // Candex ID toggle logic
