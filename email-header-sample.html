@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Header Sample</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;500;400&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1976d2;
+      --primary-light: #e3f0fa;
+      --accent: #1976d2;
+      --accent-light: #e3f0fa;
+      --neutral-bg: #f5f7fa;
+      --text: #222;
+      --muted: #5f6368;
+      --border: #e0e0e0;
+      --info-label: #e3f0fa;
+      --info-value: #fff;
+      --card-radius: 16px;
+      --card-shadow: 0 4px 24px rgba(60,64,67,0.10);
+      --badge-bg: #e3f0fa;
+      --badge-text: #1976d2;
+      --header-gradient: linear-gradient(90deg, #1976d2 0%, #67b6f4 100%);
+    }
+    body {
+      background: var(--neutral-bg);
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      color: var(--text);
+      margin: 0;
+      padding: 2rem 0;
+    }
+    .controls {
+      position: fixed;
+      left: 2rem;
+      top: 2rem;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .rotate-btn, .toggle-candex-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.6em 1.2em;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+      transition: background 0.2s;
+      font-weight: 500;
+      outline: none;
+    }
+    .rotate-btn:hover, .toggle-candex-btn:hover {
+      background: #1251a3;
+    }
+    .email-card {
+      background: #fff;
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+      border: 1px solid var(--border);
+      max-width: 480px;
+      margin: 0 auto;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .header-bar {
+      background: var(--header-gradient);
+      padding: 1.8rem 2rem;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 2rem;
+      position: relative;
+      min-height: 100px;
+    }
+    .logo-container {
+      position: relative;
+      flex: 0 0 auto;
+      width: 120px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      box-shadow: 0 2px 8px rgba(60,64,67,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.8rem;
+      box-sizing: border-box;
+    }
+    .logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .header-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+      min-width: 0;
+    }
+    .concept-title {
+      font-family: 'Montserrat', 'Inter', sans-serif;
+      font-size: 1.32rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.03em;
+      text-align: left;
+      text-shadow: 0 1px 4px rgba(25,118,210,0.15);
+      text-transform: uppercase;
+      margin: 0;
+    }
+    .header-details {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+      font-size: 0.85rem;
+      color: #e3f0fa;
+      font-weight: 400;
+      opacity: 0.95;
+    }
+    .header-details .main-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      white-space: nowrap;
+    }
+    .header-details .from-info {
+      opacity: 0.9;
+    }
+    .header-details .separator {
+      opacity: 0.7;
+      margin: 0 0.2rem;
+    }
+    .divider {
+      width: 100%;
+      height: 1.5px;
+      background: var(--primary-light);
+      border: none;
+      margin: 0;
+    }
+    .cta-row {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 1.3rem 2rem 0.7rem 2rem;
+      box-sizing: border-box;
+    }
+    .cta-btn {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 9px;
+      padding: 0.9em 2.2em;
+      font-size: 1.05rem;
+      font-family: 'Montserrat', 'Inter', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(25,118,210,0.15);
+      display: block;
+      text-align: center;
+    }
+    .cta-btn:hover {
+      background: #1565c0;
+      box-shadow: 0 4px 12px rgba(25,118,210,0.2);
+    }
+    .instructions-block {
+      width: 100%;
+      padding: 0.8rem 0 0.2rem;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    .candex-id-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .candex-id-label {
+      color: var(--text);
+      font-weight: 500;
+    }
+    .candex-id-value {
+      color: var(--primary);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .candex-note {
+      color: var(--muted);
+      font-style: italic;
+    }
+    .email-body {
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
+      border: none;
+      margin: 0;
+      max-width: 100%;
+      padding: 2rem 2rem 1.5rem;
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .email-body p {
+      margin: 0 0 1rem 0;
+    }
+    .cta-section {
+      padding: 0.5rem 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .instructions-block.visible {
+      display: flex;
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .email-footer {
+      background: transparent;
+      border-radius: 0 0 var(--card-radius) var(--card-radius);
+      box-shadow: none;
+      border: none;
+      margin: 0;
+      max-width: 100%;
+      padding: 1rem 2rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+      border-top: 1.5px solid var(--primary-light);
+      white-space: nowrap;
+    }
+    @media (max-width: 600px) {
+      .email-card {
+        border-radius: 0;
+      }
+      .header-bar, .cta-row, .instructions-block, .email-body, .email-footer {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      .header-bar {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+      }
+      .header-info {
+        align-items: center;
+        text-align: center;
+      }
+      .header-details {
+        flex-direction: column;
+        gap: 0.2rem;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <button class="rotate-btn" onclick="rotateLogo()">Rotate Logo</button>
+    <button class="toggle-candex-btn" id="toggle-candex" onclick="toggleCandex()">Show Candex ID</button>
+  </div>
+  <div class="email-card">
+    <!-- 1. Header Bar with Logo and All Info -->
+    <div class="header-bar">
+      <div class="logo-container">
+        <div class="logo">
+          <img id="main-logo" src="logos/British_Airways-Logo.wine.png" alt="Client Logo">
+        </div>
+      </div>
+      <div class="header-info">
+        <div class="concept-title">Booth Design</div>
+        <div class="header-details">
+          <div class="main-info">
+            <span>California</span>
+            <span class="separator">|</span>
+            <span>PO# 123456</span>
+          </div>
+          <div class="from-info">From: Colgate</div>
+        </div>
+      </div>
+    </div>
+    <hr class="divider">
+    <!-- 2. Email Body -->
+    <div class="email-body">
+      <p>Hi [Seller XYZ],</p>
+      <p>Colgate has partnered with Candex to help manage the ordering and payment process for the following service: Booth Design.</p>
+      <p>You can view the full order details, status, and next steps by clicking the button below.</p>
+      <div class="signature">
+        <p>Thank you for your partnership,<br>The Colgate Team</p>
+      </div>
+    </div>
+    <!-- 3. CTA Section -->
+    <div class="cta-section">
+      <a href="#" class="cta-btn" id="main-cta">View Order</a>
+      <div class="instructions-block" id="instructions-block">
+        <div class="candex-id-row">
+          <span class="candex-id-label">Candex ID</span>
+          <span class="candex-id-value">43434343</span>
+        </div>
+        <div class="candex-note">You'll need this code to authenticate</div>
+      </div>
+    </div>
+    <!-- 4. Email Footer -->
+    <div class="email-footer">
+      © 2024 Colgate. All rights reserved. | 123 Main St, California, USA
+    </div>
+  </div>
+  <script>
+    // List of logo file names in the logos folder
+    const logos = [
+      'logos/British_Airways-Logo.wine.png',
+      'logos/Screenshot 2025-06-19 at 10.49.34 AM.png',
+      'logos/Screenshot 2025-06-19 at 10.49.46 AM.png',
+      'logos/Screenshot 2025-06-19 at 10.51.56 AM.png'
+    ];
+    let currentLogo = 0;
+    const logoImg = document.getElementById('main-logo');
+    function rotateLogo() {
+      currentLogo = (currentLogo + 1) % logos.length;
+      logoImg.src = logos[currentLogo];
+    }
+
+    // Candex ID toggle logic
+    let candexVisible = false;
+    const instructionsBlock = document.getElementById('instructions-block');
+    const toggleBtn = document.getElementById('toggle-candex');
+    const mainCta = document.getElementById('main-cta');
+    
+    function toggleCandex() {
+      candexVisible = !candexVisible;
+      instructionsBlock.classList.toggle('visible', candexVisible);
+      toggleBtn.textContent = candexVisible ? 'Hide Candex ID' : 'Show Candex ID';
+      mainCta.textContent = candexVisible ? 'Re-submit Invoice' : 'View Order';
+    }
+    // Hide Candex ID section by default
+    instructionsBlock.classList.remove('visible');
+  </script>
+</body>
+</html>
