@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Header Sample</title>
+  <title>Email Header Sample - Perl Modified</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;500;400&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -161,8 +161,8 @@
     .logo-container {
       position: relative;
       flex: 0 0 auto;
-      width: 120px;
-      height: 70px;
+      width: 180px;
+      height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -189,7 +189,7 @@
     .header-info {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: flex-end;
       gap: 0.4rem;
       min-width: 0;
       flex: 1;
@@ -247,7 +247,7 @@
       font-weight: 700;
       color: #fff;
       letter-spacing: 0.03em;
-      text-align: left;
+      text-align: right;
       text-shadow: 0 1px 4px rgba(25,118,210,0.15);
       text-transform: uppercase;
       margin: 0;
@@ -255,7 +255,7 @@
     .header-details {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: flex-end;
       gap: 0.25rem;
       font-size: 0.85rem;
       color: #e3f0fa;
@@ -476,23 +476,19 @@
           </div>
         </div>
         <div class="header-info">
-          <div class="concept-title">Booth Design</div>
-          <div class="header-details">
+            <div class="concept-title">BOOTH DESIGN</div>
+            <div class="header-details">
             <div class="main-info">
               <span>California</span>
               <span class="separator">|</span>
               <span>PO# 123456</span>
             </div>
-            <div class="from-info">From: Colgate-Palmolive</div>
-          </div>
-          <div class="header-cta">
-            <a href="#" class="cta-btn" id="header-cta">View Order</a>
-            <div class="candex-id-header" id="candex-id-header">
-              Use ID: <span class="code">43434343</span> to authenticate
-            </div>
-          </div>
-        </div>
-      </div>
+            <div class="header-cta">
+              <a href="#" class="cta-btn" id="header-cta">View Order</a>
+              <div class="candex-id-header" id="candex-id-header">
+                Use ID: <span class="code">43434343</span> to authenticate
+              </div>
+            </div></div></div></div>
     </div>
     <hr class="divider">
     <!-- 2. Email Body -->
@@ -601,3 +597,4 @@
   </script>
 </body>
 </html>
+<!-- Direct append test -->

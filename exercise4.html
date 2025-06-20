@@ -76,12 +76,11 @@
 
     .email-container {
       max-width: 600px;
-      margin: 20px auto;
-      background-color: white;
+      margin: 0 auto;
+      background-color: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.07);
       border-radius: var(--card-radius);
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.07);
-      border: 1px solid var(--border);
     }
     
     .email-header {
@@ -249,6 +248,150 @@
         padding: 20px;
       }
     }
+  
+  
+    .header-bar {
+      background: var(--header-gradient, linear-gradient(90deg, #181f4b 0%, #232a5c 100%));
+      padding: 2rem 2rem 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      min-height: 100px;
+      border-radius: var(--card-radius) var(--card-radius) 0 0;
+    }
+    .header-content {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2rem;
+    }
+    .logo-container {
+      position: relative;
+      flex: 0 0 auto;
+      width: 180px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      box-shadow: 0 2px 8px rgba(60,64,67,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.8rem;
+      box-sizing: border-box;
+    }
+    .logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .header-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.4rem;
+      min-width: 0;
+      flex: 1;
+    }
+    .concept-title {
+      font-family: var(--font-sans);
+      font-size: 1.32rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.03em;
+      text-align: right;
+      text-shadow: 0 1px 4px rgba(25,118,210,0.15);
+      text-transform: uppercase;
+      margin: 0 0 0.5rem 0;
+    }
+    .header-details {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.25rem;
+      font-size: 0.85rem;
+      color: #e3f0fa;
+      font-weight: 400;
+      opacity: 0.95;
+    }
+    .header-details .main-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      white-space: nowrap;
+    }
+    .header-details .from-info {
+      opacity: 0.9;
+    }
+    .header-details .separator {
+      opacity: 0.7;
+      margin: 0 0.2rem;
+    }
+    .header-cta {
+      margin-top: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      width: 100%;
+      position: relative;
+    }
+    .header-cta .cta-btn {
+      font-size: 0.85rem;
+      padding: 0.5em 1.5em;
+      border-radius: 999px;
+      border: 1.5px solid var(--primary);
+      background: #fff;
+      color: var(--primary);
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(25,118,210,0.08);
+      transition: background 0.18s, color 0.18s, border 0.18s;
+      text-decoration: none;
+    }
+    .header-cta .cta-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .divider {
+      width: 100%;
+      height: 1.5px;
+      background: var(--primary-light);
+      border: none;
+      margin: 0;
+    }
+    .candex-id-header {
+      margin-top: 0.5rem;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 400;
+      display: none;
+      text-align: right;
+      width: max-content;
+      max-width: 100%;
+    }
+    .candex-id-header .code {
+      font-weight: 500;
+    }
+    .candex-id-header.visible {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -275,17 +418,32 @@
     </a>
   </div>
   <div class="email-container">
-    <div class="email-header">
-      <div class="header-icon">
-        <img src="https://i.imgur.com/M38kbLz.png" alt="Company Logo">
+    <div class="header-bar">
+      <div class="header-content">
+        <div class="logo-container">
+          <div class="logo">
+            <img id="main-logo" src="Logos/candex.jpg" alt="Client Logo">
+          </div>
+        </div>
+        <div class="header-info">
+            <div class="concept-title">SPEND LIMIT EXCEPTION</div>
+            <div class="header-details">
+              <div class="main-info">
+                <span>New York</span>
+                <span class="separator">|</span>
+                <span>Case# 987654</span>
+              </div>
+              <div class="from-info">From: Janet Buyer</div>
+            </div>
+            <div class="header-cta">
+              <a href="#" class="cta-btn" id="header-cta">View Details</a>
+              <div class="candex-id-header" id="candex-id-header">
+                Use ID: <span class="code">43434343</span> to authenticate
+              </div>
+            </div></div>
       </div>
-      <div class="header-title">
-        <h1>Spend Limit Exception</h1>
-        <p>From: Janet Buyer</p>
-      </div>
-      <a href="#" class="header-button">View Request</a>
     </div>
-    
+    <hr class="divider">
     <div class="email-body">
       <p class="main-message">A request has been submitted to place an order for <span class="highlight">$5,000</span> for <span class="highlight">"Conference Room Painting"</span>, but this exceeds your company's spend limit(s).</p>
       
