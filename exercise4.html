@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spend Limit Exception</title>
+  <title>Consolidate Emails</title>
   <style>
     :root {
       --primary: #181f4b;
@@ -301,7 +301,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 0.4rem;
+      gap: 0.2rem;
       min-width: 0;
       flex: 1;
     }
@@ -314,13 +314,13 @@
       text-align: right;
       text-shadow: 0 1px 4px rgba(25,118,210,0.15);
       text-transform: uppercase;
-      margin: 0 0 0.5rem 0;
+      margin: 0 0 0.2rem 0;
     }
     .header-details {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 0.25rem;
+      gap: 0.15rem;
       font-size: 0.85rem;
       color: #e3f0fa;
       font-weight: 400;
@@ -401,20 +401,16 @@
       New Email Header
     </a>
     <a href="exercise2.html" class="nav-button">
-      <span class="number">2</span>
-      Exercise 2
+      <span class="number">2</span> Invoice Error Validation
     </a>
     <a href="exercise3.html" class="nav-button">
-      <span class="number">3</span>
-      Exercise 3
+      <span class="number">3</span> Improve Flag Naming
     </a>
     <a href="exercise4.html" class="nav-button active">
-      <span class="number">4</span>
-      Exercise 4
+      <span class="number">4</span> Consolidate Emails
     </a>
     <a href="exercise5.html" class="nav-button">
-      <span class="number">5</span>
-      Exercise 5
+      <span class="number">5</span> CA Taxes Research
     </a>
   </div>
   <div class="email-container">
@@ -434,7 +430,7 @@
               <div class="from-info">From: Janet Buyer</div>
             </div>
             <div class="header-cta">
-              <a href="#" class="cta-btn" id="header-cta">View Details</a>
+              <a href="#" class="cta-btn" id="header-cta">Review spend limit</a>
               <div class="candex-id-header" id="candex-id-header">
                 Use ID: <span class="code">43434343</span> to authenticate
               </div>
@@ -447,6 +443,11 @@
       
       <p>This request must be approved by one of your company's designated approvers.</p>
       
+      <div class="approvers-list">
+        <strong>Approvers:</strong>
+        Akash Agarwal, Bill Jenkins, Nicole Approver, Richard Robertson, Tina Jones
+      </div>
+      
       <div class="action-points">
         <div class="action-point"><span class="emoji">👉</span> If you are an approver, please review and take action.</div>
         <div class="action-point"><span class="emoji">👉</span> If you submitted this request, you will be notified once it has been approved.</div>
@@ -457,12 +458,7 @@
         <p>This request will expire in <span class="highlight">14 days</span> if not approved.</p>
       </div>
       
-      <a href="#" class="btn-main">Review Request</a>
-      
-      <div class="approvers-list">
-        <strong>Approvers:</strong>
-        Akash Agarwal, Bill Jenkins, Nicole Approver, Richard Robertson, Tina Jones
-      </div>
+      <a href="#" class="btn-main">Review spend limit</a>
     </div>
     
     <div class="email-footer">
