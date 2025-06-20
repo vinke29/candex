@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+const fs = require('fs');
+
+const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -316,3 +318,7 @@
   </div>
 </body>
 </html>
+`;
+
+fs.writeFileSync('exercise4.html', html);
+console.log('exercise4.html has been created successfully.');
