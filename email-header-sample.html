@@ -262,6 +262,13 @@
       font-weight: 400;
       opacity: 0.95;
     }
+    .from-info {
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+      color: #ffffff;
+      font-weight: 500;
+      text-align: right;
+    }
     .header-details .main-info {
       display: flex;
       align-items: center;
@@ -414,6 +421,9 @@
         gap: 0.2rem;
         align-items: center;
       }
+      .from-info {
+        text-align: center;
+      }
     }
     @media (max-width: 800px) {
       .header-content {
@@ -483,6 +493,9 @@
               <span class="separator">|</span>
               <span>PO# 123456</span>
             </div>
+            <div class="from-info">
+              From: <span class="customer-name">Colgate-Palmolive</span>
+            </div>
             <div class="header-cta">
               <a href="#" class="cta-btn" id="header-cta">View Order</a>
               <div class="candex-id-header" id="candex-id-header">
@@ -545,6 +558,7 @@
     
     const logoImg = document.getElementById('main-logo');
     const partnerText = document.querySelector('.partner-text');
+    const customerNameElement = document.querySelector('.customer-name');
     
     function updateCustomerInfo(logoFileName) {
       const customer = customers[logoFileName];
@@ -556,6 +570,9 @@
       document.querySelectorAll('.partner-text').forEach(element => {
         element.textContent = customer.displayName;
       });
+      
+      // Update the customer name in the From: section
+      customerNameElement.textContent = customer.displayName;
       
       // For debugging
       console.log('Updated customer to:', customer.displayName);
