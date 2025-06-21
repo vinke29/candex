@@ -97,25 +97,25 @@
       <tbody>
         <tr>
           <td>Duplicate in same company</td>
-          <td class="highlight">Duplicate entity found. Move payment to original entity and delete duplicate.</td>
+          <td class="highlight">Duplicate Entity Found – Route Payment to Original entity</td>
           <td>On this payment, does the Tax # or S Entity name match the Tax # or S Entity name of any entities on Candex of another entity in this Candex Company and the their bank account currencies are same?</td>
           <td>We do not allow multiple S Entities in a Company to have same name and Tax #. When this happens, Candex support must move the payment to the original entity & delete the new duplicate.</td>
         </tr>
         <tr>
           <td>Multi QTY Service</td>
-          <td class="highlight">Service has quantity > 1. Submit invoice manually</td>
+          <td class="highlight">Service Qty > 1 – Submit invoice manually</td>
           <td>On this payment, when the order is for a service and quantity is > 1.</td>
           <td>When the order is for a service and has a quantity greater than one, we need to manually submit the invoice</td>
         </tr>
         <tr>
           <td>B Name = S Name or S Entity Name</td>
-          <td class="highlight">Buyer and Seller Names match. Potential fraud. Review details.</td>
+          <td class="highlight">Buyer/Seller Details Match – Review for Errors or Fraud</td>
           <td>Does B Requester Name fuzzy match to S User Name OR does B Requester Name fuzzy match to S Entity Name?</td>
           <td>When S User name or Entity name is the same as the B Requestor or B Entity Name this might be a mistake, so we need to validate. If true match, we can't pay S</td>
         </tr>
         <tr>
           <td>PO has Trigger Words</td>
-          <td class="highlight">VAT review needed. PO contains a sensitive keyword</td>
+          <td class="highlight">VAT review needed - PO has sensitive keyword</td>
           <td>Do the S Inv line item names include any of the words on our list?</td>
           <td>When PO contains specific words, we must verify the right VAT rate is being charged</td>
         </tr>
