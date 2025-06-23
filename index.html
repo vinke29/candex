@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Header Sample - Perl Modified</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;500;400&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Include external navigation bar CSS -->
+  <link rel="stylesheet" href="navbar.css">
+  <style>
+    :root {
+      --primary: #181f4b;
+      --primary-light: #e3e6f3;
+      --accent: #181f4b;
+      --accent-light: #e3e6f3;
+      --neutral-bg: #f5f7fa;
+      --text: #222;
+      --muted: #5f6368;
+      --border: #e0e0e0;
+      --info-label: #e3f0fa;
+      --info-value: #fff;
+      --card-radius: 16px;
+      --card-shadow: 0 4px 24px rgba(60,64,67,0.10);
+      --badge-bg: #e3f0fa;
+      --badge-text: #181f4b;
+      --header-gradient: linear-gradient(90deg, #181f4b 0%, #232a5c 100%);
+    }    /* Add margin to body to prevent content from being hidden under nav */
+    body {
+      margin-top: 20px !important;
+      padding-top: 0 !important;
+      background: var(--neutral-bg);
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      color: var(--text);
+    }
+    .controls { position: fixed; left: 4rem; top: 15rem;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .test-email-form {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .test-email-input {
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .send-test-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.6em 1.2em;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+      transition: background 0.2s;
+      font-weight: 500;
+      outline: none;
+    }
+    .rotate-btn, .toggle-candex-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.7em 1.2em;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: background 0.2s, transform 0.2s;
+      font-weight: 500;
+      outline: none;
+      width: 160px;
+    }
+    .rotate-btn:hover, .toggle-candex-btn:hover {
+      background: #1251a3;
+    }
+    .email-card {
+      background: #fff;
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+      border: 1px solid var(--border);
+      max-width: 480px;
+      margin: 0 auto;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .header-bar {
+      background: var(--header-gradient);
+      padding: 2rem 2rem 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      min-height: 100px;
+    }
+    .header-content {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 2rem;
+    }
+    .logo-container {
+      position: relative;
+      flex: 0 0 auto;
+      width: 180px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      box-shadow: 0 2px 8px rgba(60,64,67,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.8rem;
+      box-sizing: border-box;
+    }
+    .logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .header-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.4rem;
+      min-width: 0;
+      flex: 1;
+      position: relative;
+    }
+    .header-cta {
+      margin-top: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      width: 100%;
+      position: relative;
+    }
+    .header-cta .cta-btn {
+      font-size: 0.85rem;
+      padding: 0.5em 1.5em;
+      border-radius: 999px;
+      border: 1.5px solid var(--primary);
+      background: #fff;
+      color: var(--primary);
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(25,118,210,0.08);
+      transition: background 0.18s, color 0.18s, border 0.18s;
+    }
+    .header-cta .cta-btn:hover {
+      background: #1976d2;
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .header-cta .candex-id-header {
+      margin-top: 0.5rem;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 400;
+      display: none;
+      text-align: right;
+      width: max-content;
+      max-width: 100%;
+    }
+    .header-cta .candex-id-header .code {
+      font-weight: 500;
+    }
+    .header-cta .candex-id-header span.note {
+      color: var(--muted);
+      font-size: 0.7rem;
+      margin-left: 0.5em;
+    }
+    .header-cta .candex-id-header.visible {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+    .concept-title {
+      font-family: 'Montserrat', 'Inter', sans-serif;
+      font-size: 1.32rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.03em;
+      text-align: right;
+      text-shadow: 0 1px 4px rgba(25,118,210,0.15);
+      text-transform: uppercase;
+      margin: 0;
+    }
+    .header-details {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.25rem;
+      font-size: 0.85rem;
+      color: #e3f0fa;
+      font-weight: 400;
+      opacity: 0.95;
+    }
+    .from-info {
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+      color: #ffffff;
+      font-weight: 500;
+      text-align: right;
+    }
+    .header-details .main-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      white-space: nowrap;
+    }
+    .header-details .from-info {
+      opacity: 0.9;
+    }
+    .header-details .separator {
+      opacity: 0.7;
+      margin: 0 0.2rem;
+    }
+    .divider {
+      width: 100%;
+      height: 1.5px;
+      background: var(--primary-light);
+      border: none;
+      margin: 0;
+    }
+    .cta-row {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 1.3rem 2rem 0.7rem 2rem;
+      box-sizing: border-box;
+    }
+    .cta-btn {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 9px;
+      padding: 0.9em 2.2em;
+      font-size: 1.05rem;
+      font-family: 'Montserrat', 'Inter', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(25,118,210,0.15);
+      display: block;
+      text-align: center;
+    }
+    .cta-btn:hover {
+      background: #1565c0;
+      box-shadow: 0 4px 12px rgba(25,118,210,0.2);
+    }
+    .instructions-block {
+      width: 100%;
+      padding: 0.4rem 0 0.2rem;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    .candex-id-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .candex-id-label {
+      color: var(--text);
+      font-weight: 500;
+    }
+    .candex-id-value {
+      color: var(--primary);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .candex-note {
+      color: var(--muted);
+      font-style: italic;
+    }
+    .email-body {
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
+      border: none;
+      margin: 0;
+      max-width: 100%;
+      padding: 2rem 2rem 1.5rem;
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .email-body p {
+      margin: 0 0 1rem 0;
+    }
+    .email-body p:last-child {
+      margin-bottom: 0;
+    }
+    .cta-section {
+      padding: 0.5rem 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .instructions-block.visible {
+      display: flex;
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .email-footer {
+      background: transparent;
+      border-radius: 0 0 var(--card-radius) var(--card-radius);
+      box-shadow: none;
+      border: none;
+      margin: 0;
+      max-width: 100%;
+      padding: 1rem 2rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+      border-top: 1.5px solid var(--primary-light);
+      white-space: nowrap;
+    }
+    @media (max-width: 600px) {
+      .email-card {
+        border-radius: 0;
+      }
+      .header-bar, .cta-row, .instructions-block, .email-body, .email-footer {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      .header-bar {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+      }
+      .header-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+      .header-info {
+        align-items: center;
+        text-align: center;
+      }
+      .header-cta {
+        margin-top: 0.7rem;
+      }
+      .header-details {
+        flex-direction: column;
+        gap: 0.2rem;
+        align-items: center;
+      }
+      .from-info {
+        text-align: center;
+      }
+    }
+    @media (max-width: 800px) {
+      .header-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+      .header-info {
+        align-items: center;
+        text-align: center;
+      }
+      .header-cta {
+        justify-content: center;
+        margin-top: 0.7rem;
+      }
+    }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: var(--neutral-bg);
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+    <div class="nav-bar">
+    <a href="email-header-sample.html" class="nav-button active">
+      <span class="number">1</span>
+      New Email Header
+    </a>
+    <a href="exercise2.html" class="nav-button">
+      <span class="number">2</span>
+      Invoice Error Validation
+    </a>
+    <a href="exercise3.html" class="nav-button">
+      <span class="number">3</span>
+      Improve Flag Naming
+    </a>
+    <a href="exercise4.html" class="nav-button">
+      <span class="number">4</span>
+      Consolidate Emails
+    </a>
+    <a href="exercise5.html" class="nav-button">
+      <span class="number">5</span>
+      CA Taxes Research
+    </a>
+  </div>
+
+  <div class="controls">
+    <button id="rotateBtn" class="rotate-btn">Rotate Logo</button>
+    <button id="toggleCandexBtn" class="toggle-candex-btn">Show Candex ID</button>
+  </div>
+  <div class="email-card">
+    <!-- 1. Header Bar with Logo and All Info -->
+    <div class="header-bar">
+      <div class="header-content">
+        <div class="logo-container">
+          <div class="logo">
+            <img id="main-logo" src="Logos/colgate.png" alt="Client Logo">
+          </div>
+        </div>
+        <div class="header-info">
+            <div class="concept-title">BOOTH DESIGN</div>
+            <div class="header-details">
+            <div class="main-info">
+              <span>California</span>
+              <span class="separator">|</span>
+              <span>PO# 123456</span>
+            </div>
+            <div class="from-info">
+              From: <span class="customer-name">Colgate-Palmolive</span>
+            </div>
+            <div class="header-cta">
+              <a href="#" class="cta-btn" id="header-cta">View Order</a>
+              <div class="candex-id-header" id="candex-id-header">
+                Use ID: <span class="code">43434343</span> to authenticate
+              </div>
+            </div></div></div></div>
+    </div>
+    <hr class="divider">
+    <!-- 2. Email Body -->
+    <div class="email-body">
+      <div id="standard-message">
+        <p>Hi [Seller XYZ],</p>
+        <p><span class="partner-text">Colgate-Palmolive</span> has submitted a purchase order for the following service: Booth Design. Candex will manage the invoicing and payment process on their behalf.</p>
+        <p>Please view the order details, status, and next steps by clicking the button below.</p>
+      </div>
+      <div id="candex-message" style="display: none;">
+        <p>Hi [Seller XYZ],</p>
+        <p>It looks like there was an issue with the tax calculation on your invoice for the following service: Booth Design. Please review the details and submit a corrected invoice by clicking the button below.</p>
+        <p>As a reminder, Candex is managing the invoicing and payment process on <span class="partner-text">Lego</span>'s behalf.</p>
+      </div>
+    </div>
+    <!-- 3. CTA Section -->
+    <div class="cta-section">
+      <a href="#" class="cta-btn" id="main-cta">View Order</a>
+      <div class="instructions-block" id="instructions-block">
+        <div class="candex-id-row">
+          Use ID: <span class="candex-id-value">43434343</span> to authenticate
+        </div>
+      </div>
+    </div>
+    <!-- 4. Email Footer -->
+    <div class="email-footer">
+      © 2024 Candex. All rights reserved. | 123 Main St, California, USA
+    </div>
+  </div>
+  <script>
+    // Customer configuration
+    const customers = {
+      'colgate.png': {
+        name: 'Colgate-Palmolive',
+        displayName: 'Colgate-Palmolive'
+      },
+      'Lego.png': {
+        name: 'Lego',
+        displayName: 'Lego'
+      },
+      'british-airways.png': {
+        name: 'British Airways',
+        displayName: 'British Airways'
+      },
+      'Hills.png': {
+        name: 'Hill\'s',
+        displayName: 'Hill\'s'
+      }
+    };
+
+    // List of logo file names in the logos folder
+    const logos = Object.keys(customers);
+    let currentLogo = 0;
+    
+    const logoImg = document.getElementById('main-logo');
+    const partnerText = document.querySelector('.partner-text');
+    const customerNameElement = document.querySelector('.customer-name');
+    
+    function updateCustomerInfo(logoFileName) {
+      const customer = customers[logoFileName];
+      // Update the logo
+      logoImg.src = 'Logos/' + logoFileName;
+      logoImg.alt = customer.name + ' Logo';
+      
+      // Update all partner text elements in the email body
+      document.querySelectorAll('.partner-text').forEach(element => {
+        element.textContent = customer.displayName;
+      });
+      
+      // Update the customer name in the From: section
+      customerNameElement.textContent = customer.displayName;
+      
+      // For debugging
+      console.log('Updated customer to:', customer.displayName);
+    }
+
+    // Initialize with first customer
+    window.addEventListener('DOMContentLoaded', (event) => {
+      updateCustomerInfo(logos[0]);
+    });
+
+    // Rotate logo functionality
+    document.getElementById('rotateBtn').addEventListener('click', function() {
+      currentLogo = (currentLogo + 1) % logos.length;
+      updateCustomerInfo(logos[currentLogo]);
+    });
+
+    // Candex ID toggle logic
+    let candexVisible = false;
+    const instructionsBlock = document.getElementById('instructions-block');
+    const toggleBtn = document.getElementById('toggleCandexBtn');
+    const mainCta = document.getElementById('main-cta');
+    
+    toggleBtn.addEventListener('click', function() {
+      candexVisible = !candexVisible;
+      instructionsBlock.classList.toggle('visible', candexVisible);
+      toggleBtn.textContent = candexVisible ? 'Hide Candex ID' : 'Show Candex ID';
+      mainCta.textContent = candexVisible ? 'Re-submit Invoice' : 'View Order';
+      document.getElementById('header-cta').textContent = candexVisible ? 'Re-submit Invoice' : 'View Order';
+      document.getElementById('candex-id-header').classList.toggle('visible', candexVisible);
+      
+      // Toggle email body messages
+      document.getElementById('standard-message').style.display = candexVisible ? 'none' : 'block';
+      document.getElementById('candex-message').style.display = candexVisible ? 'block' : 'none';
+    });
+    
+    // Hide Candex ID section by default
+    instructionsBlock.classList.remove('visible');
+  </script>
+</body>
+</html>
+<!-- Direct append test -->
