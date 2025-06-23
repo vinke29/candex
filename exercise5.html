@@ -19,7 +19,7 @@
     }
 
     .content {
-      max-width: 800px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
       background-color: white;
@@ -29,10 +29,22 @@
 
     .document-image {
       max-width: 100%;
+      width: 100%;
       height: auto;
       margin: 20px 0;
       border: 1px solid #e0e0e0;
       border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    
+    .document-image:hover {
+      transform: scale(1.05);
+    }
+    
+    .image-container {
+      text-align: center;
+      width: 100%;
     }
 
     .image-container {
@@ -43,6 +55,25 @@
       font-style: italic;
       color: #666;
       margin-top: 10px;
+    }
+    
+    .source-link {
+      margin-top: 15px;
+    }
+    
+    .source-link a {
+      color: #1976d2;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 16px;
+      border: 1px solid #1976d2;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+    
+    .source-link a:hover {
+      background-color: #1976d2;
+      color: white;
     }
   </style>
 </head>
@@ -77,6 +108,7 @@
     <div class="image-container">
       <img src="Logos/Documents.png" alt="California Tax Documentation" class="document-image">
       <p class="caption">California Tax Documentation - Reference for tax calculations</p>
+      <p class="source-link"><a href="https://docs.google.com/spreadsheets/d/1Dp-iroHGrm-hvFRiMmSRNQ89fdNwHipU6juVSCAusus/edit?gid=0#gid=0" target="_blank">See original sheet here</a></p>
     </div>
   </div>
 </body>
